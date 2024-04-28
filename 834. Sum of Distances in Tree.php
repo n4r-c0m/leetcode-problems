@@ -1,43 +1,43 @@
 <?php
 
 class Solution {
+    private $tree;
+    private $count;
+    private $res;
+    private $n;
 
-    private $edges = [];
-    /**
-     * @param Integer $n
-     * @param Integer[][] $edges
-     * @return Integer[]
-     */
     function sumOfDistancesInTree($n, $edges) {
+        $this->n = $n;
+        $this->tree = [];
+        $this->count = array_fill(0, $n, 1);
+        $this->res = array_fill(0, $n, 0);
+
         foreach ($edges as $edge) {
-            $this->edges[$edge[0]][] = $edge[1];
-            $this->edges[$edge[1]][] = $edge[0];
+            list($u, $v) = $edge;
+            $this->tree[$u][] = $v;
+            $this->tree[$v][] = $u;
         }
 
-        return array_map([$this, 'dist'], range(0, $n - 1));
+        $this->dfs(0, -1);
+        $this->dfs2(0, -1);
+        return $this->res;
     }
 
-    protected function dist($from)
-    {
-        $result = 0;
-        $visited = [$from => true];
-
-        $queue = new SplQueue();
-        $queue->enqueue([$from, 0]);
-        while (!$queue->isEmpty()) {
-            list($current, $pathLength) = $queue->dequeue();
-            foreach ($this->edges[$current] as $destination) {
-                if (isset($visited[$destination])) {
-                    continue;
-                }
-
-                $visited[$destination] = true;
-                $result += $pathLength + 1;
-                $queue->enqueue([$destination, $pathLength + 1]);
-            }
+    private function dfs($node, $parent) {
+        foreach ($this->tree[$node] as $neighbor) {
+            if ($neighbor == $parent) continue;
+            $this->dfs($neighbor, $node);
+            $this->count[$node] += $this->count[$neighbor];
+            $this->res[$node] += $this->res[$neighbor] + $this->count[$neighbor];
         }
+    }
 
-        return $result;
+    private function dfs2($node, $parent) {
+        foreach ($this->tree[$node] as $neighbor) {
+            if ($neighbor == $parent) continue;
+            $this->res[$neighbor] = $this->res[$node] - $this->count[$neighbor] + ($this->n - $this->count[$neighbor]);
+            $this->dfs2($neighbor, $node);
+        }
     }
 }
 
