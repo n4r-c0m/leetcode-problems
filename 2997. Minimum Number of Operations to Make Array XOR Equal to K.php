@@ -12,13 +12,12 @@ class Solution {
             $xor ^= $num;
         }
 
+        $number = $xor ^ $k;
         $result = 0;
-        for ($i = 0; $i < 22; $i++) {
-            if ((($xor & (1 << $i)) > 0) != (($k & (1 << $i)) > 0)) {
-                $result++;
-            }
+        while ($number) {
+            $result += $number & 1;
+            $number >>= 1;
         }
-
         return $result;
     }
 }
