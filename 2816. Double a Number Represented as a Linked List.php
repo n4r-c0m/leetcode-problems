@@ -17,27 +17,19 @@ class Solution {
      * @param ListNode $head
      * @return ListNode
      */
-    function doubleIt($head, $convertLeadingTen = true) {
-        if (!$head) {
-            return;
+    function doubleIt($head) {
+        if ($head->val > 4) {
+            $head = new ListNode(0, $head);
         }
 
-        $this->doubleIt($head->next, false);
-        $head->val *= 2;
-
-        if ($head->next) {
-            if ($head->next->val > 9) {
-                $head->next->val -= 10;
-                $head->val += 1;
+        $curr = $head;
+        while ($curr) {
+            $curr->val = $curr->val * 2 % 10;
+            if ($curr->next && $curr->next->val > 4) {
+                $curr->val += 1;
             }
-        }
 
-        if ($convertLeadingTen) {
-            if ($head->val > 9) {
-                $head->val -= 10;
-                $lead = new ListNode(1, $head);
-                $head = $lead;
-            }
+            $curr = $curr->next;
         }
 
         return $head;
