@@ -8,17 +8,17 @@ class Solution {
      * @return Integer
      */
     function maximumHappinessSum($happiness, $k) {
-        rsort($happiness);
-        $happiness = array_slice($happiness, 0, $k);
+        sort($happiness);
 
+        $result = 0;
         for ($i = 0; $i < $k; $i++) {
-            $happiness[$i] = max(
+            $result += max(
                 0,
-                $happiness[$i] - $i,
+                array_pop($happiness) - $i,
             );
         }
 
-        return array_sum($happiness);
+        return $result;
     }
 }
 
